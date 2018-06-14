@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace ESIS\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\{Collection, ServiceProvider};
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +23,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        Collection::macro('recursive', function () {
+            return $this->map(function ($value) {
+                if (is_array($value)) {
+                    return collect($value)->recursive();
+                }
+                if (is_object($value)) {
+                    return collect($value)->recursive();
+                }
+
+                return $value;
+            });
+        });
     }
 }
