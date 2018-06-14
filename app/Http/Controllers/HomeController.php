@@ -30,20 +30,24 @@ class HomeController extends Controller
                 }
             }
             $routes = $routes->implode(',');
-            return redirect(route('home', ['endpoints' => $routes]));
+            $params = collect(['endpoints' => $routes]);
+            if (Request::has('status')) {
+                $params = $params->put('status', Request::get('status'));
+            }
+            return redirect(route('home', $params->toArray()));
         }
         $show = "";
+        $statuses = new Status();
         if (Request::has('endpoints')) {
             $show = "show";
-            $endpoints = collect(explode(',', Request::get('endpoints')));
-            $statuses = Status::whereIn('hash', $endpoints)->get();
-        } elseif (Request::has('status')) {
-            $show = "show";
-            $statuses = collect(explode(',', Request::get('status')));
-            $statuses = Status::whereIn('status', $statuses)->get();
-        } else {
-            $statuses = Status::get();
+            $statuses = $statuses->whereIn('hash', collect(explode(',', Request::get('endpoints'))));
         }
+        if (Request::has('status')) {
+            $show = "show";
+            $statuses = $statuses->whereIn('status', collect(explode(',', Request::get('status'))));
+        }
+        $statuses = $statuses->get();
+
         $payload = collect();
 
         $statuses->each(function ($endpoint) use ($payload) {
