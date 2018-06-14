@@ -41,7 +41,7 @@
                         </h1>
                     </div>
                     <div class="card-footer">
-                        <a href="{{ route('home', ['status' => "yellow"]) }}" class="btn btn-block btn-danger">Filter By Yellow Status</a>
+                        <a href="{{ route('home', ['status' => "yellow"]) }}" class="btn btn-block btn-warning">Filter By Yellow Status</a>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                         </h1>
                     </div>
                     <div class="card-footer">
-                        <a href="{{ route('home', ['status' => "green"]) }}" class="btn btn-block btn-danger">Filter By Green Status</a>
+                        <a href="{{ route('home', ['status' => "green"]) }}" class="btn btn-block btn-success">Filter By Green Status</a>
                     </div>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                                 ?>
                                 <li class="list-group-item {{ $class }}">
                                     <label class="my-auto">
-                                        <input type="checkbox" name="routes[{{ $endpoint->route }}]" class="my-auto"/> {{ strtoupper($endpoint->method) }} {{ $endpoint->route }}
+                                        <input type="checkbox" name="routes[{{ $endpoint->hash }}]" class="my-auto"/> {{ strtoupper($endpoint->method) }} {{ $endpoint->route }}
                                     </label>
                                 </li>
 
