@@ -50,7 +50,8 @@ class StatusUpdate extends Command
 
         $body->each(function ($endpoint) {
             $status = Status::where(['route' => $endpoint->get('route'), 'method' => $endpoint->get('method')])->first();
-            if (!$status->exists) {
+
+            if (is_null($status)) {
                 Status::create([
                     'route' => $endpoint->get('route'),
                     'method' => $endpoint->get('method'),
