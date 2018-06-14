@@ -44,14 +44,16 @@ class HomeController extends Controller
         $stats = collect([
             'red' => $status->filter(function ($x) {return $x === "red";})->count(),
             'yellow' => $status->filter(function ($x) {return $x === "yellow";})->count(),
-            'green' => $status->filter(function ($x) {return $x === "green";})->count()
+            'green' => $status->filter(function ($x) {return $x === "green";})->count(),
+            'total' => $status->count()
         ]);
 
-        // dd($payload, $stats);
+        $lastUpdate = Status::orderby('updated_at', 'desc')->first()->updated_at;
 
         return view('home', [
             'payload' => $payload,
-            'stats' => $stats
+            'stats' => $stats,
+            'lastUpdate' => $lastUpdate
         ]);
     }
 }

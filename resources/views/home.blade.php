@@ -14,7 +14,9 @@
                         Red Endpoints
                     </div>
                     <div class="card-body text-center">
-                        <h1 class="text-danger">{{ $stats->get('red') }}</h1>
+                        <h1>
+                            <span class="text-danger">{{ $stats->get('red') }}</span> <small class="text-muted">({{ number_format(($stats->get('red') / $stats->get('total')) * 100, 2) }}%)</small>
+                        </h1>
                     </div>
                 </div>
             </div>
@@ -24,7 +26,9 @@
                         Yellow Endpoints
                     </div>
                     <div class="card-body text-center">
-                        <h1 class="text-warning">{{ $stats->get('yellow') }}</h1>
+                        <h1>
+                            <span class="text-warning">{{ $stats->get('yellow') }}</span> <small class="text-muted">({{ number_format(($stats->get('yellow') / $stats->get('total')) * 100, 2) }}%)</small>
+                        </h1>
                     </div>
                 </div>
             </div>
@@ -34,7 +38,9 @@
                         Green Endpoints
                     </div>
                     <div class="card-body text-center">
-                        <h1 class="text-success">{{ $stats->get('green') }}</h1>
+                        <h1>
+                            <span class="text-success">{{ $stats->get('green') }}</span> <small class="text-muted">({{ number_format(($stats->get('green') / $stats->get('total')) * 100, 2) }}%)</small>
+                        </h1>
                     </div>
                 </div>
             </div>
@@ -42,6 +48,9 @@
         <div class="row">
             <div class="col-12">
                 <hr />
+                <div class="float-right">
+                    <small class="text-muted">Last Updated: {{ $lastUpdate->toDateString() }} at {{ $lastUpdate->toTimeString() }} UTC</small>
+                </div>
                 <h3>Endpoint Statuses</h3>
             </div>
         </div>

@@ -4,6 +4,8 @@ namespace ESIS\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use ESIS\Status;
+
 class StatusUpdate extends Command
 {
     /**
