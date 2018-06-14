@@ -18,6 +18,7 @@ class CreateStatusesTable extends Migration
         Schema::create('statuses', function (Blueprint $table) {
             $table->enum('method', ['get', 'post', 'put', 'delete']);
             $table->string('route');
+            $table->string('hash', 6);
             $table->string('endpoint');
             $table->enum('status', ['green', 'yellow', 'red']);
             $table->json('tags');

@@ -55,6 +55,7 @@ class StatusUpdate extends Command
                 Status::create([
                     'route' => $endpoint->get('route'),
                     'method' => $endpoint->get('method'),
+                    'hash' => str_limit(hash('sha1', $endpoint->get('method'). " ". $endpoint->get('route')), 6, ""),
                     'status' => $endpoint->get('status'),
                     'endpoint' => $endpoint->get('endpoint'),
                     'tags' => $endpoint->get('tags')->toJson()

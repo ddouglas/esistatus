@@ -2,7 +2,7 @@
 
 namespace ESIS\Http\Controllers;
 
-use Carbon, Request;
+use Carbon, Request, Validator;
 use ESIS\Status;
 
 class HomeController extends Controller
@@ -14,7 +14,36 @@ class HomeController extends Controller
 
     public function index()
     {
-        $statuses = Status::get();
+        if (Request::isMethod('post')) {
+            $validator = Validator::make(Request::all(), [
+                'routes' => 'required|array',
+
+            ]);
+            if ($validator->fails()) {
+                return redirect(route('home'))->withErrors($validator);
+            }
+            $routes = collect(Request::get('routes'))->keys();
+            $exists = Status::whereIn('hash', $routes)->get();
+            foreach($routes as $route) {
+                if ($exists->where('hash', $route)->isEmpty()) {
+                    return redirect(route('home'));
+                }
+            }
+            $routes = $routes->implode(',');
+            return redirect(route('home', ['endpoints' => $routes]));
+        }
+        $show = "";
+        if (Request::has('endpoints')) {
+            $show = "show";
+            $endpoints = collect(explode(',', Request::get('endpoints')));
+            $statuses = Status::whereIn('hash', $endpoints)->get();
+        } elseif (Request::has('status')) {
+            $show = "show";
+            $statuses = collect(explode(',', Request::get('status')));
+            $statuses = Status::whereIn('status', $statuses)->get();
+        } else {
+            $statuses = Status::get();
+        }
         $payload = collect();
 
         $statuses->each(function ($endpoint) use ($payload) {
@@ -53,7 +82,8 @@ class HomeController extends Controller
         return view('home', [
             'payload' => $payload,
             'stats' => $stats,
-            'lastUpdate' => $lastUpdate
+            'lastUpdate' => $lastUpdate,
+            'show' => $show
         ]);
     }
 }
