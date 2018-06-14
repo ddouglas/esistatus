@@ -9,38 +9,57 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header text-center">
+                <div class="card text-center">
+                    <div class="card-header">
                         Red Endpoints
                     </div>
-                    <div class="card-body text-center">
+                    <div class="card-body">
                         <h1>
-                            <span class="text-danger">{{ $stats->get('red') }}</span> <small class="text-muted">({{ number_format(($stats->get('red') / $stats->get('total')) * 100, 2) }}%)</small>
+                            <span class="text-danger">{{ $stats->get('red') }}</span>
+                            @if($stats->get('total') > 0)
+                                <small class="text-muted">({{ number_format(($stats->get('red') / $stats->get('total')) * 100, 2) }}%)</small>
+
+                            @endif
                         </h1>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ route('home', ['status' => "red"]) }}" class="btn btn-block btn-danger">Filter By Red Status</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header text-center">
+                <div class="card text-center">
+                    <div class="card-header">
                         Yellow Endpoints
                     </div>
-                    <div class="card-body text-center">
+                    <div class="card-body">
                         <h1>
-                            <span class="text-warning">{{ $stats->get('yellow') }}</span> <small class="text-muted">({{ number_format(($stats->get('yellow') / $stats->get('total')) * 100, 2) }}%)</small>
+                            <span class="text-warning">{{ $stats->get('yellow') }}</span>
+                            @if($stats->get('total') > 0)
+                                <small class="text-muted">({{ number_format(($stats->get('yellow') / $stats->get('total')) * 100, 2) }}%)</small>
+                            @endif
                         </h1>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ route('home', ['status' => "yellow"]) }}" class="btn btn-block btn-danger">Filter By Yellow Status</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header text-center">
+                <div class="card text-center">
+                    <div class="card-header ">
                         Green Endpoints
                     </div>
-                    <div class="card-body text-center">
+                    <div class="card-body">
                         <h1>
-                            <span class="text-success">{{ $stats->get('green') }}</span> <small class="text-muted">({{ number_format(($stats->get('green') / $stats->get('total')) * 100, 2) }}%)</small>
+                            <span class="text-success">{{ $stats->get('green') }}</span>
+                            @if($stats->get('total') > 0)
+                                <small class="text-muted">({{ number_format(($stats->get('green') / $stats->get('total')) * 100, 2) }}%)</small>
+                            @endif
                         </h1>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ route('home', ['status' => "green"]) }}" class="btn btn-block btn-danger">Filter By Green Status</a>
                     </div>
                 </div>
             </div>
@@ -51,36 +70,54 @@
                 <div class="float-right">
                     <small class="text-muted">Last Updated: {{ $lastUpdate->toDateString() }} at {{ $lastUpdate->toTimeString() }} UTC</small>
                 </div>
-                <h3>Endpoint Statuses</h3>
+                <h3>
+                    Endpoint Statuses <small>[<a href="#" data-toggle="collapse" data-target=".multi-route">Expand Routes</a>]</small>
+                </h3>
             </div>
         </div>
-        @foreach($payload as $payload)
-            <div class="card">
-                <div class="card-header" id="headingOne">
-                    <h5 class="mb-0" data-toggle="collapse" data-target="#{{ $payload->get('group')->get('id') }}">
-                        <div class="float-right">
-                            R: {{ $payload->get('stats')->get('red') }}
-                            Y: {{ $payload->get('stats')->get('yellow') }}
-                            G: {{ $payload->get('stats')->get('green') }}
-                        </div>
-                        {{ $payload->get('group')->get('name') }}
-                    </h5>
-                </div>
-                <div id="{{ $payload->get('group')->get('id') }}" class="collapse" data-parent="#accordion">
-                    <ul class="list-group list-group-flush">
-                        @foreach($payload->get('endpoints') as $endpoint)
-                            @if($endpoint->status === "red")
-                                <li class="list-group-item list-group-item-danger">{{ strtoupper($endpoint->method) }} {{ $endpoint->route }}</li>
-                            @elseif ($endpoint->status === "yellow")
-                                <li class="list-group-item list-group-item-warning">{{ strtoupper($endpoint->method) }} {{ $endpoint->route }}</li>
-                            @else
-                                <li class="list-group-item">{{ strtoupper($endpoint->method) }} {{ $endpoint->route }}</li>
-                            @endif
+        <form action="{{ route('home') }}" method="post">
+            @foreach($payload as $payload)
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0" data-toggle="collapse" data-target="#{{ $payload->get('group')->get('id') }}">
+                            <div class="float-right">
+                                R: {{ $payload->get('stats')->get('red') }}
+                                Y: {{ $payload->get('stats')->get('yellow') }}
+                                G: {{ $payload->get('stats')->get('green') }}
+                            </div>
+                            {{ $payload->get('group')->get('name') }}
+                        </h5>
+                    </div>
+                    <div id="{{ $payload->get('group')->get('id') }}" class="collapse multi-route {{ $show }}" data-parent="#accordion">
+                        <ul class="list-group list-group-flush">
+                            @foreach($payload->get('endpoints') as $endpoint)
+                                <?php
+                                    $class = "";
+                                    if ($endpoint->status === "red") {
+                                        $class = "list-group-item-danger";
+                                    } elseif ($endpoint->status === "yellow") {
+                                        $class = "list-group-item-warning";
+                                    }
+                                ?>
+                                <li class="list-group-item {{ $class }}">
+                                    <label class="my-auto">
+                                        <input type="checkbox" name="routes[{{ $endpoint->route }}]" class="my-auto"/> {{ strtoupper($endpoint->method) }} {{ $endpoint->route }}
+                                    </label>
+                                </li>
 
-                        @endforeach
-                    </ul>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endforeach
+            <div class="row">
+                <div class="col-12 mx-auto">
+                    {{ csrf_field() }}
+                    <button type="submit" class="btn-primary btn-lg mt-2">Generate URL for selected endpoints</button>
+                    <a href="{{ route('home') }}" class="btn-danger btn-lg mt-2">Reset Filter</a>
+
                 </div>
             </div>
-        @endforeach
+        </form>
     </div>
 @endsection
