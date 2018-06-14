@@ -11,4 +11,4 @@
 |
 */
 
-Route::get('/', "HomeController@index")->name('home');
+Route::match(['GET', 'POST'],'/', "HomeController@index")->name('home');
