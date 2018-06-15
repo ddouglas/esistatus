@@ -7,7 +7,7 @@
         <h1 class="text-center">Welcome to ESI Status</h1>
         <h3 class="text-center">A Simple Open Source Project by David Davaham</h3>
         <hr />
-        @if ($lastUpdate < now()->subMinutes(4))
+        @if ($lastUpdate < now()->subMinutes(2))
             <div class="alert alert-danger">
                 <h3>Stale Information Warning</h3>
                 <p>Status have not been updated since {{ $lastUpdate->toDateTimeString() }} and will be inaccurate.</p>
