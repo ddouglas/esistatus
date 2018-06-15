@@ -7,6 +7,12 @@
         <h1 class="text-center">Welcome to ESI Status</h1>
         <h3 class="text-center">A Simple Open Source Project by David Davaham</h3>
         <hr />
+        @if ($lastUpdate < now()->subMinutes(4))
+            <div class="alert alert-danger">
+                <h3>Stale Information Warning</h3>
+                <p>Status have not been updated since {{ $lastUpdate->toDateTimeString() }} and will be inaccurate.</p>
+            </div>
+        @endif
         <div class="row">
             <div class="col-md-4">
                 <div class="card text-center">
@@ -15,7 +21,7 @@
                     </div>
                     <div class="card-body">
                         <h1>
-                            <span class="text-danger">{{ $stats->get('red') }}</span>
+                            <span class="text-danger" id="#red">{{ $stats->get('red') }}</span>
                             @if($stats->get('total') > 0)
                                 <small class="text-muted">({{ number_format(($stats->get('red') / $stats->get('total')) * 100, 2) }}%)</small>
 
@@ -34,7 +40,7 @@
                     </div>
                     <div class="card-body">
                         <h1>
-                            <span class="text-warning">{{ $stats->get('yellow') }}</span>
+                            <span class="text-warning" id="#yellow">{{ $stats->get('yellow') }}</span>
                             @if($stats->get('total') > 0)
                                 <small class="text-muted">({{ number_format(($stats->get('yellow') / $stats->get('total')) * 100, 2) }}%)</small>
                             @endif
@@ -52,7 +58,7 @@
                     </div>
                     <div class="card-body">
                         <h1>
-                            <span class="text-success">{{ $stats->get('green') }}</span>
+                            <span class="text-success" id="#green">{{ $stats->get('green') }}</span>
                             @if($stats->get('total') > 0)
                                 <small class="text-muted">({{ number_format(($stats->get('green') / $stats->get('total')) * 100, 2) }}%)</small>
                             @endif
