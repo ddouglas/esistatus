@@ -7,6 +7,9 @@
         <h1 class="text-center">Welcome to ESI Status</h1>
         <h3 class="text-center">A Simple Open Source Project by David Davaham</h3>
         <hr />
+        <p class="text-center">
+            This site automatically refreshes every <strong>{{ $timer }}</strong> seconds.<br /> There are currently <strong><span id="countdown"></span></strong> seconds remaining till the next refresh
+        </p>
         @if ($lastUpdate < now()->subMinutes(2))
             <div class="alert alert-danger">
                 <h3>Stale Information Warning</h3>
@@ -65,7 +68,7 @@
                         </h1>
                     </div>
                     <div class="card-footer">
-                        <a href="{{ route('home', ['status' => "green"]) }}" class="btn btn-block btn-success">Filter By Green Status</a>
+                        <a href="{{ route('home', ['status' => "yellow,red"]) }}" class="btn btn-block btn-success">Filter Out Green Status</a>
                     </div>
                 </div>
             </div>
@@ -126,4 +129,22 @@
             </div>
         </form>
     </div>
+@endsection
+
+
+@section('js')
+    <script>
+
+        function countdown(remaining) {
+            if(remaining === 0) {
+        			location.reload(true);
+            }
+            document.getElementById('countdown').innerHTML = remaining;
+            setTimeout(function(){ countdown(remaining - 1); }, 1000);
+        };
+        timer = 60;
+        $(document).ready(function ()  {
+            countdown(timer);
+        });
+    </script>
 @endsection

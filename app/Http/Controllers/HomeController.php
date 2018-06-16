@@ -37,16 +37,28 @@ class HomeController extends Controller
             return redirect(route('home', $params->toArray()));
         }
         $show = "";
-        $statuses = new Status();
+        $statuses = Status::get();
+
+        $stats = collect([
+            'red' => $statuses->where('status', 'red')->count(),
+            'yellow' => $statuses->where('status', 'yellow')->count(),
+            'green' => $statuses->where('status', 'green')->count(),
+            'total' => $statuses->count()
+        ]);
+
         if (Request::has('endpoints')) {
             $show = "show";
             $statuses = $statuses->whereIn('hash', collect(explode(',', Request::get('endpoints'))));
-        }
-        if (Request::has('status')) {
+            $stats = collect([
+                'red' => $statuses->where('status', 'red')->count(),
+                'yellow' => $statuses->where('status', 'yellow')->count(),
+                'green' => $statuses->where('status', 'green')->count(),
+                'total' => $statuses->count()
+            ]);
+        } else if (Request::has('status')) {
             $show = "show";
             $statuses = $statuses->whereIn('status', collect(explode(',', Request::get('status'))));
         }
-        $statuses = $statuses->get();
 
         $payload = collect();
 
@@ -72,22 +84,16 @@ class HomeController extends Controller
             $payload->get($name)->get('endpoints')->push($endpoint);
         });
 
-        $status = $payload->pluck('endpoints.*.status')->flatten();
-
-        $stats = collect([
-            'red' => $status->filter(function ($x) {return $x === "red";})->count(),
-            'yellow' => $status->filter(function ($x) {return $x === "yellow";})->count(),
-            'green' => $status->filter(function ($x) {return $x === "green";})->count(),
-            'total' => $status->count()
-        ]);
-
         $lastUpdate = Status::orderby('updated_at', 'desc')->first()->updated_at;
+
+        $timer = config('services.eve.refresh_interval');
 
         return view('home', [
             'payload' => $payload,
             'stats' => $stats,
             'lastUpdate' => $lastUpdate,
-            'show' => $show
+            'show' => $show,
+            'timer' => $timer
         ]);
     }
 }

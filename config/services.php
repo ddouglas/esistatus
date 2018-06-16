@@ -22,7 +22,8 @@ return [
     'eve' => [
         'urls' => [
             'esi' => "https://esi.evetech.net"
-        ]
+        ],
+        'refresh_interval' => env('REFRESH_INTERVAL', 60)
     ]
 
 ];
