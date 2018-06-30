@@ -48,9 +48,10 @@ class StatusUpdate extends Command
         }
         $body = collect(json_decode($response->getBody()))->recursive();
 
-        $body->each(function ($endpoint) {
-            $status = Status::where(['route' => $endpoint->get('route'), 'method' => $endpoint->get('method')])->first();
+        $statuses = Status::get()->keyBy('hash');
 
+        $body->each(function ($endpoint) use ($statuses) {
+            $status = $statuses->where('route', $endpoint->get('route'))->where('method', $endpoint->get('method'))->first();
             if (is_null($status)) {
                 Status::create([
                     'route' => $endpoint->get('route'),
@@ -65,6 +66,11 @@ class StatusUpdate extends Command
                     'status' =>  $endpoint->get('status')
                 ]);
             }
+            $statuses->forget($status->hash);
         });
+        if ($statuses->isNotEmpty()) {
+            $hashes = $statuses->keys();
+            Status::whereIn('hash', $hashes->toArray())->delete();
+        }
     }
 }

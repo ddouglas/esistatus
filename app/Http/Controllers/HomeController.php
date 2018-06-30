@@ -86,14 +86,21 @@ class HomeController extends Controller
 
         $lastUpdate = Status::orderby('updated_at', 'desc')->first()->updated_at;
 
-        $timer = config('services.eve.refresh_interval');
+        $timer = 60;
+
+        if ($timer - now()->format("s") < 0) {
+            return redirect(route('home'));
+        } else {
+            $refresh = $timer - now()->format("s");
+        }
 
         return view('home', [
             'payload' => $payload,
             'stats' => $stats,
             'lastUpdate' => $lastUpdate,
             'show' => $show,
-            'timer' => $timer
+            'timer' => $timer,
+            'refresh' => $refresh
         ]);
     }
 }

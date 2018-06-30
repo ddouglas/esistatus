@@ -124,17 +124,14 @@
                     {{ csrf_field() }}
                     <button type="submit" class="btn-primary btn-lg mt-2">Generate URL for selected endpoints</button>
                     <a href="{{ route('home') }}" class="btn-danger btn-lg mt-2">Reset Filter</a>
-
                 </div>
             </div>
         </form>
     </div>
 @endsection
 
-
 @section('js')
     <script>
-
         function countdown(remaining) {
             if(remaining === 0) {
         			location.reload(true);
@@ -142,7 +139,7 @@
             document.getElementById('countdown').innerHTML = remaining;
             setTimeout(function(){ countdown(remaining - 1); }, 1000);
         };
-        timer = 60;
+        timer = {{ $refresh }};
         $(document).ready(function ()  {
             countdown(timer);
         });
