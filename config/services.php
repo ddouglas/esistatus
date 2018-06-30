@@ -23,6 +23,11 @@ return [
         'urls' => [
             'esi' => "https://esi.evetech.net"
         ]
+    ],
+    'bitbucket' => [
+        'urls' => [
+            'repo' => "https://bitbucket.org/devoverlord/esistatus"
+        ]
     ]
 
 ];

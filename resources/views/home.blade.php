@@ -5,7 +5,7 @@
 @section('content')
     <div class="container">
         <h1 class="text-center">Welcome to ESI Status</h1>
-        <h3 class="text-center">A Simple Open Source Project by David Davaham</h3>
+        <h3 class="text-center">A Simple <a href="{{ config('services.bitbucket.urls.repo') }}" target="_blank">Open Source Project</a> by David Davaham</h3>
         <hr />
         <p class="text-center">
             This site automatically refreshes every <strong>{{ $timer }}</strong> seconds.<br /> There are currently <strong><span id="countdown"></span></strong> seconds remaining till the next refresh
