@@ -9,6 +9,7 @@
         <hr />
         <p class="text-center">
             This site automatically refreshes every <strong>{{ $timer }}</strong> seconds.<br /> There are currently <strong><span id="countdown"></span></strong> seconds remaining till the next refresh
+            <noscript><br />You need Javascript to refresh automatically</noscript>
         </p>
         @if ($lastUpdate < now()->subMinutes(2))
             <div class="alert alert-danger">
